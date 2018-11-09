@@ -1,0 +1,14 @@
+{
+	"name": "Smart Home Made Easy",
+	"short_name": "SHME",
+	"start_url": "/index.html",
+	"icons": [{
+		"src": "/imgs/icon.png",
+		"sizes": "1024x1024",
+		"type": "image/png"
+	}],
+	"theme_color": "#1E90FF",
+	"background_color": "#1E90FF",
+	"display": "standalone",
+	"orientation": "any"
+}

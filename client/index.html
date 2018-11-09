@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="it">
+    <head>
+		<meta name="viewport" content="width=device-width">
+		<meta name="mobile-web-app-capable" content="yes">
+		<link rel="manifest" href="manifest_webapp.json">
+		<link rel="icon" sizes="1024x1024" href="icon.png">
+		<meta name="theme-color" content="#1E90FF">
+		<title>Smart Home Made Easy</title>
+		<link href="include/snackbarlight.min.css" rel="stylesheet">
+        <script src="include/snackbarlight.min.js"></script>
+        <link href="include/stylesheet.css" rel="stylesheet">
+		<!-- Colori bottoni -->
+        <style media="screen" type="text/css">button.buttonOn{background-color:#ef5350}button.buttonOff{background-color:#039be5}</style>
+        <script type="text/javascript" src="services.js"></script>
+		<script type="text/javascript">
+            var username=""
+            var password=""
+			var today = new Date();
+			var expiry = new Date(today.getTime() + 365 * 24 * 3600 * 1000); // plus 365 days
+            
+            function login(){
+                username=document.getElementById("usernameForm").value;
+                password=document.getElementById("passwordForm").value;
+                console.log("provo a connettere");
+                Services_connect();
+            }
+
+            //setta il bottone op al valore val e aggiorna il server, se val==-1 effettua lo switch
+            function trigger(op,val,update){
+                buttontriggered=document.getElementById(op);
+                newstate=val;
+                if(val==-1){
+                    if(buttontriggered.classList.contains("buttonOn")) newstate=1;
+                    else newstate=0;
+                }
+                
+                if(update=="true"){
+                    Services_sendMessage(op,newstate);
+				}
+
+                if(op=="triforce"){
+                    console.log(buttontriggered.style.backgroundColor);
+                    if(newstate==0){ buttontriggered.classList.add("buttonOn");buttontriggered.classList.remove("buttonOff"); }
+                    else{ buttontriggered.classList.remove("buttonOn"); buttontriggered.classList.add("buttonOff");} 
+                }
+            }
+
+            Services_ResponseHandler=function(data){
+                console.log("messaggio arrivato");
+                switch(data.code){
+                    case 400:
+                        new Snackbar(data.text);
+                        break;
+                    case 200:
+                        new Snackbar(data.text);
+                        if(data.text=="Login OK") document.getElementById("serverStatusImg").src="include/green.png";   
+                        break;
+                    case 100:
+                        trigger(data.op,data.val,"false");
+                        break;
+                    case 101:
+                        data.op.forEach(element => {
+                            trigger(element,data.val[data.op.indexOf(element)],"false")
+                        });
+                        break;
+                    default:
+                        new Snackbar("messaggio sconosciuto, codice ("+data.code+") contenuto ("+data.text+")");
+                }
+            }
+
+            Services_CloseHandler=function(){
+                document.getElementById("serverStatusImg").src="include/error.png";
+                new Snackbar("Il server ha chiuso la connessione");
+            }
+
+            Services_OpenHandler=function(){
+                Services_auth(username,password);  
+            }
+    	</script>
+		<!-- Cookie set -->
+	</head>
+    <body>
+		<script>function openNav(){document.getElementById("mySidenav").style.width="250px",document.getElementById("myOverlay").style.display="block"}function closeNav(){document.getElementById("mySidenav").style.width="0",document.getElementById("myOverlay").style.display="none"}</script>
+		<div id="mySidenav" class="sidenav">
+			<font href="javascript:void(0)" class="closebtn" onclick="closeNav()" color="white">&times;</font>
+			<div align="center" style="color:rgba(255,255,255,1) !important">
+                <h2 style="font-family:Roboto-Regular">Server: <img src='include/error.png' id='serverStatusImg' width="16" height="16" alt="Server offline" style="vertical-align:middle"></h2>
+                <div class="container">
+					<input id="usernameForm" type="text" placeholder="Username" name="uname" required><br>
+					<input id="passwordForm" type="text" placeholder="Password" name="psw" required>
+					<button onclick="login()" type="submit" style="width:90px;height:35px;font-size:15pt;float:right;background-color:rgba(0,150,136,1)">Login</button>
+                </div>
+			</div>
+		</div>
+		<!-- Use any element to open the sidenav -->
+		<span style="font-size:30px;cursor:pointer" onclick="openNav()"><img src="include/menu.png" width="32px" height="32px" alt="Menu"></span>
+    	<div class="button">
+    		<button id="triforce" onclick="trigger(this.id,-1,'true')" class="buttonOff" >Triforce</button>
+    	</div>
+		<div id="background"></div>
+    </body>
+</html>
