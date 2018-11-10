@@ -6,7 +6,8 @@ ___
 Questo sorgente è stato costruito con il fine di essere semplice e comprensibile a tutti. Alcune pratiche utilizzate potrebbero essere rischiose in ambiti professionali, utilizzate il codice con cautela.
 ___
 
-Potete trovare le slides utilizzate per il talk in questo [link](https://drive.google.com/file/d/1GvdwU6Fr45FLQsBTsxXKQ_W3N6T9KZlk/view?usp=sharing)
+Potete trovare le slides utilizzate per il talk in questo [link](https://drive.google.com/file/d/1GvdwU6Fr45FLQsBTsxXKQ_W3N6T9KZlk/view?usp=sharing).
+
 Nelle slides troverete anche le istruzioni su cosa vi serve installare nella vostra macchina per utilizzare il progetto.
 
 #### Come lanciare il server
